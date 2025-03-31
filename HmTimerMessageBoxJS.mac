@@ -1,0 +1,64 @@
+/*
+ * Example script.
+ * This codes is licensed under CC0 1.0 Universal
+ */
+
+jsmode "JScript\\" + currentmacrofilename;
+
+js {
+
+debuginfo(2);
+
+var MB = {
+    OK                : 0x000000,
+    OKCANCEL          : 0x000001,
+    ABORTRETRYIGNORE  : 0x000002,
+    YESNOCANCEL       : 0x000003,
+    YESNO             : 0x000004,
+    RETRYCANCEL       : 0x000005,
+    CANCELTRYCONTINUE : 0x000006,
+    HELP              : 0x004000,
+
+    // アイコンの種類
+    ICONERROR         : 0x000010,
+    ICONQUESTION      : 0x000020,
+    ICONWARNING       : 0x000030,
+    ICONINFORMATION   : 0x000040,
+
+    TOPMOST           : 0x040000,
+    RIGHT             : 0x080000,
+
+    // フォルトのボタンが何番目にフォーカスが当たっているか。
+    DEFBUTTON1        : 0x000000,
+    DEFBUTTON2        : 0x000100,
+    DEFBUTTON3        : 0x000200,
+    DEFBUTTON4        : 0x000300,
+};
+
+ID = {
+    // 選択したボタン
+    OK              : 1,
+    CANCEL          : 2,
+    ABORT           : 3,
+    RETRY           : 4,
+    IGNORE          : 5,
+    YES             : 6,
+    NO              : 7,
+    CLOSE           : 8,
+    HELP            : 9,
+    TRYAGAIN        : 10,
+    CONTINUE        : 11,
+    TIMEOUT         : 32000,
+};
+
+var command = sprintf("%s %s %s %d %d", currentmacrodirectory() + "\\HmTimerMessageBox.exe", "メッセージ", "タイトル", MB.ABORTRETRYIGNORE | MB.ICONINFORMATION | MB.DEFBUTTON2, 4000);
+
+var exeProcess = hidemaru.runProcess( command, ".", "stdio", "sjis" );
+
+exeProcess.onClose( function() {
+    // exitCode は IDのOKやRETRYやABORTなどと同じ数値が返ってくる。
+    // これにより、何を選んだのか？ あるいはタイムが切れたのか？ などが判断できる。
+    console.log(exeProcess.exitCode);
+} );
+
+}
